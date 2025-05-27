@@ -2,10 +2,16 @@ const express = require('express');
 const connectDb = require('./database/connectDB');
 const router = require('./routes/handler');
 const dotenv = require('dotenv').config()
+const cors = require('cors')
 
 const app = express()
 const port = process.env.port;
 
+const corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions))
 
 // express usage 
 app.use(express.json())
