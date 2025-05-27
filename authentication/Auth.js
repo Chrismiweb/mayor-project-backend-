@@ -1,5 +1,8 @@
 const sellerModel = require("../model/SellerModel")
 const userModel = require("../model/UserModel")
+const jwt = require('jsonwebtoken');
+const bcrypt = require("bcryptjs");
+
 
 
 
@@ -71,8 +74,58 @@ const registerUser = async(req, res)=>{
     }
 
 
+
+    const login = async(req, res) =>{
+        // input username/email and password
+        const {identifier, password} = req.body
+
+        if(!identifier || !password){
+            return res.status(400).json({error: "please input all credentials to login"})
+        }
+
+        // check user
+        let checkUser = await userModel.findOne({
+            $or: [{ email: identifier }, { username: identifier }]
+        });
+
+        let role = "user"
+
+        // if not user check if seller
+        if(!checkUser){
+            checkUser = await sellerModel.findOne({
+            $or :[{email :identifier, name: identifier}]
+        })
+
+         role = "seller"
+        }
+
+        if(!checkUser){
+            return res.status(400).json({error:"user with this email or username does not have an account, please sign up"})
+        }
+
+         // Compare password (assuming you hash passwords before saving)
+          if (password !== checkUser.password) {
+            return res.status(400).json({ error: "Incorrect password" });
+        }
+        const token = jwt.sign({ userId : checkUser._id, role}, process.env.jwt_secret,{ expiresIn: "1h"});
+
+          res.status(200).json({
+            message: "Login successful",
+            token,
+            user: {
+                id: checkUser._id,
+                email: checkUser.email,
+                role,
+                ...(role === "user" ? { username: checkUser.username } : { name: checkUser.name, businessName: checkUser.businessName })
+            }
+        });
+
+    }
+
+
 module.exports = {
     registerUser,
-    registerSeller
+    registerSeller,
+    login
 
 }
