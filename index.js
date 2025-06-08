@@ -3,9 +3,10 @@ const connectDb = require('./database/connectDB');
 const router = require('./routes/handler');
 const dotenv = require('dotenv').config()
 const cors = require('cors')
-
 const app = express()
-const port = process.env.port;
+const port = process.env.port || 1080;
+const fileUpload = require('express-fileupload');
+
 
 const corsOptions = {
     origin: '*',
@@ -16,6 +17,7 @@ app.use(cors(corsOptions))
 // express usage 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload()); 
 app.use('/', router)
 
 
