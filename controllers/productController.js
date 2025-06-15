@@ -4,6 +4,12 @@ const path = require('path');
 const fs = require('fs');
 
 
+// configure cloudinary
+cloudinary.config({ 
+  cloud_name: 'mayor_project', 
+  api_key: '335474817675132', 
+  api_secret: 'p1wRybg3I05CwvYnDjJa2ir3ofA'
+});
 
 
 // const addProduct = async (req, res) => {
@@ -47,10 +53,10 @@ const fs = require('fs');
 const addProduct = async (req, res) => {
 
     try {
-      const { productName, description, socials, phoneNumber } = req.body;
+      const { productName, description, socials, phoneNumber, price } = req.body;
   
       // Validate required fields
-      if (!productName || !description || !socials || !phoneNumber) {
+      if (!productName || !description || !socials || !phoneNumber || !price) {
         return res.status(400).json({ error: "Please fill all credentials" });
       }
   
@@ -86,6 +92,7 @@ const addProduct = async (req, res) => {
         description,
         socials,
         phoneNumber,
+        price,
         productImage: fileName,
       });
   
@@ -104,7 +111,43 @@ const addProduct = async (req, res) => {
   };
   
 
+ const getAllProduct = async (req, res) => {
+  try {
+    const products = await productModel.find();
+    if (!products || products.length === 0) {
+      return res.status(404).json({ error: "No products found" });
+    }
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+
+const getSellerProducts = async (req, res) => {
+  const { sellerId } = req.params;
+
+  if (!sellerId) {
+    return res.status(400).json({ error: "Seller ID is required" });
+  }
+
+  try {
+    const products = await productModel.find({ sellerId });
+
+    if (!products || products.length === 0) {
+      return res.status(404).json({ error: "No products found for this seller" });
+    }
+
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+
 
 module.exports = {
-    addProduct
+    addProduct,
+    getAllProduct,
+    getSellerProducts
 }

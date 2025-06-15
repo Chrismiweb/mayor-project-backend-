@@ -7,7 +7,12 @@ const sellerSchema = new Schema({
     Description :{type: String},
     password :{type: String},
     confirmPassword :{type: String},
-    profileImage: {type: String}
+    profileImage: {type: String},
+    product:{
+        type: mongoose.Types.ObjectId,
+        ref:"Product"
+    },
+    
 });
 
 const sellerModel = model("Seller", sellerSchema)
