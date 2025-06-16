@@ -5,11 +5,11 @@ const fs = require('fs');
 
 
 // configure cloudinary
-// cloudinary.config({ 
-//   cloud_name: 'mayor_project', 
-//   api_key: '335474817675132', 
-//   api_secret: 'p1wRybg3I05CwvYnDjJa2ir3ofA'
-// });
+cloudinary.config({ 
+  cloud_name: 'mayor_project', 
+  api_key: '335474817675132', 
+  api_secret: 'p1wRybg3I05CwvYnDjJa2ir3ofA'
+});
 
   
 // controllers/productController.js

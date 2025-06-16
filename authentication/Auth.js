@@ -95,7 +95,7 @@ const registerUser = async(req, res)=>{
         // const token = jwt.sign({ id : seller._id}, process.env.jwt_secret,{ expiresIn: "1h"});
         const token = jwt.sign(
             { id: seller._id, role: "seller" },
-            process.env.JWT_SECRET,
+            process.env.jwt_secret,
             { expiresIn: "1h" }
         );
 
@@ -129,7 +129,7 @@ const registerUser = async(req, res)=>{
         // const token = jwt.sign({ id : checkUser._id}, process.env.jwt_secret,{ expiresIn: "1h"});
             const token = jwt.sign(
             { id: user._id, role: "user" },
-            process.env.JWT_SECRET,
+            process.env.jwt_secret,
             { expiresIn: "1h" }
             );
 
