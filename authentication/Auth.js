@@ -81,18 +81,23 @@ const registerUser = async(req, res)=>{
         }
         
         // check user
-        const checkUser = await sellerModel.findOne({
+        const seller = await sellerModel.findOne({
             $or: [{ email: identifier }, { name: identifier }]
         });
 
-        if(!checkUser){
+        if(!seller){
             return res.status(400).json({error:"user with this email or username does not have a seller account"})
         }
           // Compare password (assuming you hash passwords before saving)
-          if (password !== checkUser.password) {
+          if (password !== seller.password) {
             return res.status(400).json({ error: "Incorrect password" });
         }
-        const token = jwt.sign({ userId : checkUser._id}, process.env.jwt_secret,{ expiresIn: "1h"});
+        // const token = jwt.sign({ id : seller._id}, process.env.jwt_secret,{ expiresIn: "1h"});
+        const token = jwt.sign(
+            { id: seller._id, role: "seller" },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
 
 
           res.status(200).json({
@@ -110,23 +115,27 @@ const registerUser = async(req, res)=>{
         }
         
         // check user
-        const checkUser = await userModel.findOne({
+        const user = await userModel.findOne({
             $or: [{ email: identifier }, { username: identifier }]
         });
 
-        if(!checkUser){
+        if(!user){
             return res.status(400).json({error:"user with this email or username does not have a user account"})
         }
           // Compare password (assuming you hash passwords before saving)
-          if (password !== checkUser.password) {
+          if (password !== user.password) {
             return res.status(400).json({ error: "Incorrect password" });
         }
-        const token = jwt.sign({ userId : checkUser._id}, process.env.jwt_secret,{ expiresIn: "1h"});
-
+        // const token = jwt.sign({ id : checkUser._id}, process.env.jwt_secret,{ expiresIn: "1h"});
+            const token = jwt.sign(
+            { id: user._id, role: "user" },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+            );
 
           res.status(200).json({
             message: "Login successful",
-            token
+            token,
         });
 
     }
@@ -134,7 +143,6 @@ const registerUser = async(req, res)=>{
     const getAllSellers = async (req, res) => {
         try {
             const sellers = await sellerModel.find();
-
             if (!sellers || sellers.length === 0) {
             return res.status(404).json({ error: "No sellers found" });
             }

@@ -25,7 +25,15 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    
+     sellerId:{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User", 
+        required: true },  
+
+
+},
+ {
+  timestamps: true  // ✅ This adds createdAt and updatedAt automatically
 });
 
 const productModel = model("Product", productSchema)
