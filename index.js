@@ -1,17 +1,21 @@
 const express = require('express');
+const path = require("path");         
 const connectDb = require('./database/connectDB');
 const router = require('./routes/handler');
 const dotenv = require('dotenv').config()
 const cors = require('cors')
 const app = express()
+
 const port = process.env.port || 1080;
 const fileUpload = require('express-fileupload');
 
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
+
 app.use(cors(corsOptions))
 
 // express usage 
