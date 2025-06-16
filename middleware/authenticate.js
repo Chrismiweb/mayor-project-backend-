@@ -89,7 +89,7 @@ const isLoggedIn = async (req, res, next) => {
   const token = auth.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.jwt_secret);
     console.log("Decoded JWT:", decoded);
 
     let current;
